@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+        <p> 
+          <!-- 计算属性 -->
+          <!-- 计算属性computed,有依赖缓存，只要所依赖的数据发生变化，才会重新计算，否则，直接使用缓存，页面不会重新渲染，性能之高，令人发指。 -->
+          <!-- 拿的是computed中total的返回值 -->
+          商品总数：{{total}}
+        </p>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      new Vue({
+          el: '#app', 
+          data() {
+            return {
+              goodList: ['花生','瓜子','啤酒'],
+            }
+          },
+          computed: { // 计算属性是写在和data同级的computed中
+              total() {// 和上面使用计算属性total，名字保存一致
+                  return this.goodList.length + '种'
+              }
+          }
+      });
+
+     </script>
+  </body>
+
+</html>

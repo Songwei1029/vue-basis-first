@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+      .active {
+      background-color: red;
+    }
+    .message-box {
+      padding: 10px 20px;
+      
+    }
+    .success{
+      background: #4fc08d;
+      border: 1px solid #42b983;
+    }
+    .error{
+      background: red;
+      border: 1px solid red;
+    }
+    .message-box-close {
+      float: right;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+
+      <!-- 错误时的消息提示 -->
+      <message :show.sync="isShowMessgaeError" class="error">
+        <template #title>
+          <strong>
+            输入有误！
+          </strong>
+        </template>
+        <template>内容不能为空</template>
+      </message> 
+      <!-- 成功的消息提示 -->
+      <message :show.sync="isShowMessgae" class="success">
+        <!-- v-slot:可以简写为# -->
+        <template #title>
+          <strong>
+            恭喜你，
+          </strong>
+        </template>
+        <template>新增成功！！</template>
+      </message> 
+
+      <good-add v-model='good' @good-add-handle='addGood'></good-add>
+      <good-list :goodlist='goodList'></good-list>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      // 放到第一行
+      Vue.prototype.$bus = new Vue();
+      // 弹窗
+      Vue.component('message',{
+        props: {
+          show: {
+            type: Boolean,
+            default: false
+          }
+        },
+        template: `
+          <div class='message-box' v-if='show'>
+            <!--通过slot获取传入内容-->
+            
+            <!--具名插槽-->
+            <slot name="title"></slot>
+            <!--slot作为占位符（占坑位）-->
+            <slot></slot>
+            <span class='message-box-close' @click='$emit("update:show",false)'>X</span>
+          </div>
+        `,
+         // 监听关闭事件
+         mounted () { 
+          this.$bus.$on('close-message', () => { 
+            this.$emit('update:show', false) 
+          }); 
+        },
+      })
+      // 新增商品
+      Vue.component('good-add',{
+        model: {
+          prop: 'value',
+          event: 'change'
+        },
+        props: {
+          value: String,
+          default: ''
+        },
+        template: `
+          <div>
+            <input
+              @change="$emit('change', $event.target.value)"
+              :value=value
+              type="text"
+              @keydown.enter='add'
+              />
+            <button @click="add">添加商品</button>
+            <button @click="removeAllMessage">清空提示框</button>
+          </div>
+        `,
+        methods: {
+          add(){
+            this.$emit('good-add-handle');
+          },
+          removeAllMessage(){
+            this.$bus.$emit('close-message');
+          }
+        },
+       
+      })
+      //商品列表
+      Vue.component('good-list',{
+        data(){
+          return {
+            selected: '',
+          }
+        },
+        props: {
+          'goodlist': { 
+            type: Array,
+            default: []
+          }
+        },
+        template: `
+          <ul>
+            <!-- class绑定 --> 
+            <li v-for="item in goodlist" 
+              :class="{active: (selected === item)}" 
+              @click="selected = item">{{item}}</li> 
+          </ul>
+        `
+      });
+      
+      new Vue({
+          el: '#app',
+          data() {
+            return {
+              goodList: ['花生','瓜子','啤酒'],
+              good: '',
+              isShowMessgae: false,
+              isShowMessgaeError: false,
+            }
+          },
+          methods: {
+            addGood() {
+              if(this.good){ // 如果输入有内容
+                this.goodList.push(this.good); 
+                this.isShowMessgae = true;
+              } else {
+                this.isShowMessgaeError = true;
+              }
+              
+            },
+            closeMessage($evnet){
+              this.isShowMessgae = $evnet;
+            }
+        },
+      });
+    </script>
+  </body>
+
+</html>

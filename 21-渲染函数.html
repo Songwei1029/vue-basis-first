@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style></style>
+  </head>
+
+  <body>
+    <div id="app">
+      <!-- 用render实现一个组件 ： 实现标题 -->
+      <!-- level是指需要生成h1-6哪一个标签 -->
+      <my-head :level='1' :title='title'>{{title}}</my-head>
+      <my-head :level='3' :title='title'>我是另一个我</my-head>
+
+      <!-- <h2 :title='title'>
+        {{title}}
+      </h2> -->
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      Vue.component('my-head',{
+        props: ['level', 'title'],        
+        // render函数接收一个 createElement参数，我们一般简写为h    h === createElement
+        // 因为Vdom底层的算法是snabbdom算法，这个算法里面生成虚拟dom的方法名就叫h
+        render(h){ 
+          // 注意这儿一定要有return， return出createElement返回的Vnode。
+         return h(
+            'h'+this.level, // 参数1:标签名字
+            {attr:  { title: this.title }},// 参数2
+            this.$slots.default, // 参数3: 子节点数组（虚拟节点）   标签之间的内容，需要使用默认插槽来获取
+          )
+        }
+      });
+
+      new Vue({
+          el: '#app', 
+          data() { 
+            return {
+              title: 'hello, vue!'
+            }
+          },
+      });
+    </script>
+  </body>
+
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+      .active {
+        background-color: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+       <good-add @good-add-handle='addGood'></good-add>
+  
+       <!-- 批量修改价格功能 -->
+       <div>
+         <!-- 加上.number修饰符，得到的值就是number类型，否则默认得到字符串类型 -->
+          <input v-model.number="price"> 
+          <button @click="batchUpdatePrice">批量更新价格</button>
+       </div>
+
+        <ul>
+          <li v-for="item in goodList">{{item.name}} - ￥{{item.price}}</li> 
+        </ul>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      Vue.component('good-add',{
+        data(){
+          return {
+            good: '', //  将good从父组件提取到自己去维护
+          }
+        },
+        template: `
+        <div>
+          <input v-model="good" type="text" v-on:keydown.enter="add"/>
+          <button @click="add">添加商品</button>
+        </div>
+        `,
+        methods: {
+          add(){
+            // 发送自定义事件通知父组件新增商品（派发事件）
+            // 注意事件名称定义时不要有大写字母出现
+            this.$emit('good-add-handle', this.good);
+          }
+        }
+      })
+
+      new Vue({
+          el: '#app',
+          data() {
+            return {
+              goodList: [{name: '花生'},{name: '瓜子'},{name: '啤酒'}],
+              price: 0
+            }
+          },
+          methods: {
+            addGood(good) { // 接收子组件传递过来的参数 然后维护goodList
+               // this指向的是实例对象
+              // 需要注意 数组需要变异方法，才能被检测更新
+          		this.goodList.push({name: good}); 
+
+              // Vue 不能检测以下数组的变动： 1. 当你利用索引直接设置一个数组项时  2.当你修改数组的长度时
+              // this.goodList[this.goodList.length] = this.good; // 不会更新视图
+              // console.log(this.goodList); // 数据是变化了的
+            },
+            // 添加批量更新价格方法
+            batchUpdatePrice(){
+              this.goodList.forEach(item => {
+                // item.price = this.price; // 不能更新视图，但是数据是修改了的
+                // 方式1
+                // Vue.set(item, 'price', this.price); // 全局方法 效果都是一样的
+                // 方式2
+                this.$set(item, 'price', this.price); // 推荐使用
+              });
+            }
+        },
+      });
+     </script>
+  </body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <!-- 
+        <标签 v-for="(值，索引) in 要循环的源数据数组"></标签>
+        <标签 v-for="(值，索引) of 要循环的源数据数组"></标签>
+        <标签 v-for="(值，键名, 索引) in 要循环的源数据对象"></标签>
+       -->
+        <ul>
+          <li v-for="item in goodList">{{item}}</li> 
+        </ul>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      // 创建vue实例
+      new Vue({
+           el: '#app',
+           data() {
+             return {
+              goodList: ['花生','瓜子','啤酒']
+             }
+           },
+       });
+
+     </script>
+  </body>
+
+</html>

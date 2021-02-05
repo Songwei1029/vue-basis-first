@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <input type="text" v-focus>
+
+      <!-- 特别需要注意： 指令里，""中是表达式，如果需要传递字符串，则需要加上字符串 -->
+      <button v-permission="'superAdmin'">删除</button>
+
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      // 假设当前登陆用户是会员
+      const user = 'member';
+
+      // 注册一个全局自定义指令 `v-focus`
+      Vue.directive('focus', {
+        // 当被绑定的元素插入到 DOM 中时……
+        // binding很重要，详细信息参看官网
+        inserted: function (el, binding) {
+          // 聚焦元素
+          el.focus()
+        }
+      });
+      
+      // 第一个参数： 指令名，注意使用时要加上v-
+      // 第二个参数： 配置项
+      Vue.directive('permission', {
+        inserted: function (el, binding) {
+          console.log(binding);
+           // 若指定用户角色和当前用户角色不匹配则删除当前指令绑定的元素
+          if (user !== binding.value) {
+            el.parentElement.removeChild(el)
+          }
+        }
+      });
+
+      new Vue({
+        el: '#app',
+      });
+    </script>
+  </body>
+</html>

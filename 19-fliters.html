@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <ul>
+        <li v-for='item of goodList'>
+          <!-- 和方法一样调用，传递参数 -->
+          {{item.name}} - {{item.price | symbol('¥')}}
+        </li>
+      </ul>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+    
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          goodList: [{name: '花生', price: 10},{name: '瓜子', price: 40},{name: '啤酒', price: 90}],
+        }
+      },
+      filters: {
+        symbol: function(value, sym = '$') { // 第一个参数，理解为上面的item.price  第二个参数，就是('¥')中传递过来的符号，  为了容错处理 默认值给个$
+          return sym + value;
+        }
+      }
+    });
+    </script>
+  </body>
+</html>

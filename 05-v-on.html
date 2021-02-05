@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+    .active {
+      background-color: red;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <!-- 
+        语法：
+          <标签 v-on:click="count++"></标签>
+          <标签 v-on:click="increase"></标签>
+          <标签 v-on:click="increase(实参)"></标签>
+
+          <标签 v-on:事件类型="表达式或函数名或函数名()"></标签>
+          v-on可以简写为@
+          <标签 @事件类型="表达式或函数名或函数名()"></标签>
+       -->
+      <!-- 表单元素输入绑定 --> 
+      <input v-model="good" type="text" v-on:keydown.enter="addGood"/>
+      <button @click="addGood">添加商品</button>
+
+      <ul>
+        <li v-for="item in goodList">{{item}}</li> 
+      </ul>
+
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      // 创建vue实例
+      new Vue({
+           el: '#app',
+           data() {
+             return {
+              goodList: ['花生','瓜子','啤酒'],
+              good: ''
+             }
+           },
+           methods: { // 方法都是写在和data同级的methods中
+          	addGood() {
+              // this指向的是实例对象
+              // 需要注意 数组需要变异方法，才能被检测更新
+          		this.goodList.push(this.good); 
+
+              // this.goodList[this.goodList.length] = this.good; // 不会更新视图
+              // console.log(this.goodList); // 数据是变化了的
+          	} 
+          },
+       });
+
+     </script>
+  </body>
+
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+      .active {
+      background-color: red;
+    }
+    .message-box {
+      padding: 10px 20px;
+      background: #4fc08d;
+      border: 1px solid #42b983;
+    }
+    .message-box-close {
+      float: right;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <!-- 只是传递true测试时，需要加上v-bind代表表达式，否则会当成字符串 -->
+      <!-- <message :show="true">新增成功！！</message> -->
+
+      <!-- 
+        方式1: 声明一个closeMessage方法去修改状态
+        <message @close='closeMessage' :show="isShowMessgae">新增成功！！</message> 
+      -->
+      <!-- 方式2: 直接修改isShowMessgae状态 -->
+      <message @close='isShowMessgae=$event' :show="isShowMessgae">新增成功！！</message> 
+
+      <good-add v-model='good' @good-add-handle='addGood'></good-add>
+      <good-list :goodlist='goodList'></good-list>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      // 弹窗
+      Vue.component('message',{
+        props: {
+          show: {
+            type: Boolean,
+            default: false
+          }
+        },
+        template: `
+          <div class='message-box' v-if='show'>
+            <!--通过slot获取传入内容-->
+            <!--slot作为占位符（占坑位）-->
+            <slot></slot>
+            <span class='message-box-close' @click='$emit("close",false)'>X</span>
+          </div>
+        `
+      })
+      // 新增商品
+      Vue.component('good-add',{
+        model: {
+          prop: 'value',
+          event: 'change'
+        },
+        // 接收父组件传递value，不需要额外维护good了
+        props: {
+          value: String,
+          default: ''
+        },
+        template: `
+          <div>
+            <input
+              @change="$emit('change', $event.target.value)"
+              :value=value
+              type="text"
+              @keydown.enter='add'
+              />
+            <button @click="add">添加商品</button>
+          </div>
+        `,
+        methods: {
+          add(){
+            // 派发事件不再需要传递数据
+            this.$emit('good-add-handle');
+          }
+        }
+      })
+      //商品列表
+      Vue.component('good-list',{
+        data(){
+          return {
+            selected: '', // 这个属性是这个组件自己的，所以就从父组件中提到这个组件来维护
+          }
+        },
+        props: {
+          // 一定要注意，如果上面写:goodList='goodList'，这儿用goodList接收不到，还是要使用goodlist
+          // 因为 HTML 是大小写不敏感的，会被自动转换为全小写 
+          'goodlist': { 
+            type: Array,
+            default: []
+          }
+        },
+        template: `
+          <ul>
+            <!-- class绑定 --> 
+            <li v-for="item in goodlist" 
+              :class="{active: (selected === item)}" 
+              @click="selected = item">{{item}}</li> 
+          </ul>
+        `
+      });
+      
+      new Vue({
+          el: '#app',
+          data() {
+            return {
+              goodList: ['花生','瓜子','啤酒'],
+              good: '',
+              isShowMessgae: false, // 控制弹窗是否显示
+            }
+          },
+          methods: {
+            addGood() {
+              this.goodList.push(this.good); 
+              this.isShowMessgae = true; // 新增成功时，打开弹窗
+            },
+            closeMessage($evnet){
+              this.isShowMessgae = $evnet; // 点击弹窗组件中的X时，父组件修改状态为false
+            }
+        },
+      });
+    </script>
+  </body>
+
+</html>

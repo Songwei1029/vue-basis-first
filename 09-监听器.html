@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+        <p> 
+          <!-- 监听器 --> 
+          <!-- 还是访问的是 数据对象data中的totalCount属性 -->
+          课程总数：{{totalCount}}
+        </p>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      new Vue({
+          el: '#app', 
+          data() {
+            return {
+              goodList: ['花生','瓜子','啤酒'],
+              totalCount: ''
+            }
+          },
+           // 这种不能生效，因为初始化时不会触发 
+          // watch: { 
+          	// goodList(newValue, oldValue) { 
+          		// this.totalCount = newValue.length + '种' 
+          	// } 
+          // },
+         watch: {  // 写在和data同级的watch中
+           goodList: { // 监控goodList，值发生变化时，才执行
+              immediate: true, // 立即执行一次
+              // deep: true,  // 深层次监听，例如数组对象
+              handler(newValue, oldValue) { 
+                this.totalCount = newValue.length + '种' 
+              } 
+           } 
+        },
+      });
+
+     </script>
+  </body>
+
+</html>

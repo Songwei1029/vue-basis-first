@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 宿主容器（根节点） -->
+  <div id="app"></div>
+
+    <script src="vue.js"></script>
+    <script>
+     // 创建vue实例
+      new Vue({
+          el: '#app',
+          data() {
+            return {
+              goodList: ['花生','瓜子','啤酒'],
+              selected: ''
+            }
+          },
+          methods: {},
+          render() {
+            with(this){
+              return _c('div',{attrs:{"id":"app"}},[_c('ul',_l((goodList),function(item){return _c('li',{class:{active: (selected === item)},on:{"click":function($event){selected = item}}},[_v(_s(item))])}),0)])}
+          }
+    });
+    console.log(vm.$options.render);
+    </script>
+</body>
+</html>

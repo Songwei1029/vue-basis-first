@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+    .active {
+      background-color: red;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+       <ul>
+          <!-- class绑定 --> 
+          <li v-for="item in goodList" 
+            :class="{active: (selected === item)}" 
+            @click="selected = item">{{item}}</li> 
+            <!-- style绑定 --> 
+            <!-- <li v-for="item in goodList" 
+                  :style="{backgroundColor: (selected === item)?'#ddd':'transparent'}" @click="selectedCourse = item">{{item}}</li> --> 
+        </ul>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      // 创建vue实例
+      new Vue({
+           el: '#app',
+           data() {
+             return {
+               // 保存选中项 
+		          selected: '', 
+              goodList: ['花生','瓜子','啤酒']
+             }
+           },
+       });
+
+     </script>
+  </body>
+
+</html>

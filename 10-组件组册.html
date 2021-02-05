@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+      .active {
+        background-color: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+        <!-- 组件列表 -->  
+      <!-- goodList是父组件的数据对象中的属性， goodlist是子组件中用于接收数据的字段，在props中去设置类型和默认值和接收 -->
+ 	  	<good-list :goodlist='goodList'></good-list>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+     Vue.component('good-list',{
+        data(){
+          return {
+            selected: '', // 这个属性是这个组件自己的，所以就从父组件中提到这个组件来维护
+          }
+        },
+        props: {
+          // 一定要注意，如果上面写:goodList='goodList'，这儿用goodList接收不到，还是要使用goodlist
+          // 因为 HTML 是大小写不敏感的，会被自动转换为全小写 
+          'goodlist': { 
+            type: Array,
+            default: []
+          }
+        },
+        template: `
+          <ul>
+            <!-- class绑定 --> 
+            <li v-for="item in goodlist" 
+              :class="{active: (selected === item)}" 
+              @click="selected = item">{{item}}</li> 
+          </ul>
+        `
+      });
+     new Vue({
+      el: '#app',
+      data() {
+        return {
+          goodList: ['花生','瓜子','啤酒'],
+        }
+      },
+    })
+     </script>
+  </body>
+
+</html>

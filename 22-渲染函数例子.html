@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+      .icon {
+        width: 1em;
+        height: 1em;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <my-head :level='1' :title='title' icon='Food'>{{title}}</my-head>
+
+      <!-- <h3 :title='title'>
+          <svg class="icon"><use xlink:href="#icon-iconfinder_Food_C_"></use></svg>
+        {{title}}
+      </h3> -->
+    </div>
+
+    <script src="./iconfont.js"></script>
+    <script src="vue.js"></script>
+    <script>
+      Vue.component('my-head',{
+        props: ['level', 'title', 'icon'],        
+        render(h){ 
+          let children = [];           
+          // 思路： 第一步，把用户传入的icon，生成<svg class="icon"><use xlink:href="#icon-icon名"></use></svg>添加到children数组中
+          // 第二步： 把默认插槽内容this.$slots.default放到children数组中
+          // 第三步：h函数参数3就替换为children数组
+          // 第一步： 生成svg，添加图标   同样是调用h函数生成
+          const svgVnode = h(
+            'svg',
+            { class: 'icon' }, // 添加固定类名为icon  详见官网createElement参数2
+            [h('use',{attrs: {"xlink:href": `#icon-iconfinder_${this.icon}_C_`}})] // 参数3: 子节点数组（虚拟节点）,svg还有个子级use，所以再调用h方法生成use，需要注意的是需要是数组，所以将返回的vnode放到一个数组中
+          );
+          children = [svgVnode, ...this.$slots.default];
+
+         return h(
+            'h'+this.level, // 参数1:标签名字
+            {attrs:  { title: this.title }},// 参数2
+            children, // 参数3: 子节点数组（虚拟节点）   标签之间的内容，需要使用默认插槽来获取
+          )
+        }
+      });
+
+      new Vue({
+          el: '#app', 
+          data() { 
+            return {
+              title: 'hello, vue!'
+            }
+          },
+      });
+    </script>
+  </body>
+
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+      .active {
+        background-color: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+       <good-add @good-add-handle='addGood'></good-add>
+  
+        <ul>
+          <li v-for="item in goodList">{{item}}</li> 
+        </ul>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      Vue.component('good-add',{
+        data(){
+          return {
+            good: '', //  将good从父组件提取到自己去维护
+          }
+        },
+        template: `
+        <div>
+          <input v-model="good" type="text" v-on:keydown.enter="add"/>
+          <button @click="add">添加商品</button>
+        </div>
+        `,
+        methods: {
+          add(){
+            // 发送自定义事件通知父组件新增商品（派发事件）
+            // 注意事件名称定义时不要有大写字母出现
+            this.$emit('good-add-handle', this.good);
+          }
+        }
+      })
+
+      new Vue({
+          el: '#app',
+          data() {
+            return {
+              goodList: ['花生','瓜子','啤酒'],
+            }
+          },
+          methods: {
+            addGood(good) { // 接收子组件传递过来的参数 然后维护goodList
+              this.goodList.push(good); 
+            } 
+        },
+      });
+     </script>
+  </body>
+
+</html>

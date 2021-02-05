@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+    .active {
+      background-color: red;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <input v-model="good" type="text" v-on:keydown.enter="addGood"/>
+      <button @click="addGood">添加商品</button>
+
+      <!-- 逻辑和JS是一样的，从上往下，找到第一个满足条件的渲染，其他的不渲染。 -->
+
+      <p v-if='goodList.length === 0'>没有商品，敬请期待～～</p>
+      <!-- v-else-if 必须紧跟在带v-if或者v-else-if的元素之后。 -->
+      <template v-else-if='goodList.length === 1'>
+        <!-- 只有一条数据时，我想要显示多个标签，这个时候，就在这些标签外加一个template，把v-if放template上，template标签不会渲染出来的 -->
+        <p >有一条数据了哦，但是不给看</p>
+        <span>嘿嘿嘿</span>
+      </template>
+      <!-- v-else元素必须紧跟在带v-if或者v-else-if的元素的后面，否则它将不会被识别。 -->
+      <ul v-else>
+        <li v-for="item in goodList">{{item}}</li> 
+      </ul>
+
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      new Vue({
+           el: '#app',
+           data() {
+             return {
+              goodList: [],
+              good: ''
+             }
+           },
+           methods: {
+          	addGood() {
+          		this.goodList.push(this.good); 
+          	} 
+          },
+       });
+
+     </script>
+  </body>
+
+</html>

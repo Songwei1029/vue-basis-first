@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+      .icon {
+        width: 1em;
+        height: 1em;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <my-head :level='1' :title='title' icon='Food'>{{title}}</my-head>
+    </div>
+
+    <script src="./iconfont.js"></script>
+    <script src="vue.js"></script>
+    <script>
+      Vue.component('my-head',{
+        functional: true,  // 1. functional设置为true，标示是函数式组件
+        props: ['level', 'title', 'icon'],   
+        // 在函数式组件中，没有this
+        // 所以render函数，提供第二个参数作为上下文             
+        render(h, context){ 
+          // 之前从this上拿取'level', 'title', 'icon'，就要变化了
+          // 2. 从context.props上去拿取
+          const { level, title, icon } = context.props;
+          let children = [];           
+          const svgVnode = h(
+            'svg',
+            { class: 'icon' },
+            [h('use',{attrs: {"xlink:href": `#icon-iconfinder_${icon}_C_`}})] 
+          );
+          // 3. 子元素获取: 增加context参数，并将this.$slots.default更新为context.children，然后将this.level更新为context.props.level。
+          children = [svgVnode, ...context.children];
+
+         return h(
+            'h'+level, 
+            {attrs:  { title: title }},
+            children,
+          )
+        }
+      });
+
+      new Vue({
+          el: '#app', 
+          data() { 
+            return {
+              title: 'hello, vue!'
+            }
+          },
+      });
+    </script>
+  </body>
+</html>
